@@ -67,8 +67,8 @@ export class LyricsParser {
     
     // Create display text by adding spaces around brackets then removing them
     const displayText = line
-      .replace(/\[([^\]]+)\]/g, ' $1 ')  // Add spaces around bracketed content
-      .replace(/\[-\]/g, '')             // Remove gap markers
+      .replace(/\[-\]/g, '')             // Remove gap markers first
+      .replace(/\[([^\]]+)\]/g, ' $1 ')  // Add spaces around remaining bracketed content
       .replace(/\s+/g, ' ')             // Normalize whitespace
       .trim();
     

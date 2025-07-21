@@ -24,7 +24,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
     // Define colors for each beat position
     const beatColors = ['blue', 'red', 'green', 'yellow', 'purple', 'orange', 'cyan', 'magenta'];
 
-    // Highlight all beat words with their position colors
+    // Highlight all beat words with their position colors (skip silent beats)
     currentLine.beatMappings.forEach(mapping => {
       if (mapping.word && !mapping.skip) {
         const wordSpan = wordRefs.current.get(mapping.word.toLowerCase());
@@ -32,6 +32,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
           wordSpan.style.color = beatColors[mapping.beat] || 'black';
         }
       }
+      // Silent beats ([-]) are completely ignored in display
     });
   }, [currentBeat, currentLine]);
 
