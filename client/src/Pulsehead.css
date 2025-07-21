@@ -1,0 +1,23 @@
+.pulsehead-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.pulsehead {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #808080;
+  transition: background-color 0.1s ease-out;
+}
+
+.pulsehead.flashing {
+  background-color: #FF0000;
+}
