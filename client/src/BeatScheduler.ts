@@ -32,7 +32,7 @@ export class BeatScheduler {
       // Play tick sound at precise time - short percussive hit
       synth.triggerAttackRelease('C5', '64n', time);
       
-      console.log(`Beat ${this.beatCount}`);
+      // The callback will handle logging with word info
       this.beatCount++;
       
       const beatEvent: BeatEvent = {

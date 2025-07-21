@@ -21,19 +21,17 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
       span.style.color = 'black';
     });
 
-    // Define colors for each beat position
-    const beatColors = ['blue', 'red', 'green', 'yellow', 'purple', 'orange', 'cyan', 'magenta'];
+    // Flash the current beat's word red
+    const currentMapping = currentLine.beatMappings.find(
+      mapping => mapping.beat === currentBeat
+    );
 
-    // Highlight all beat words with their position colors (skip silent beats)
-    currentLine.beatMappings.forEach(mapping => {
-      if (mapping.word && !mapping.skip) {
-        const wordSpan = wordRefs.current.get(mapping.word.toLowerCase());
-        if (wordSpan) {
-          wordSpan.style.color = beatColors[mapping.beat] || 'black';
-        }
+    if (currentMapping && currentMapping.word && !currentMapping.skip) {
+      const wordSpan = wordRefs.current.get(currentMapping.word.toLowerCase());
+      if (wordSpan) {
+        wordSpan.style.color = '#FF0000';
       }
-      // Silent beats ([-]) are completely ignored in display
-    });
+    }
   }, [currentBeat, currentLine]);
 
   const createWordSpans = (text: string, beatMappings: any[]) => {
@@ -70,16 +68,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
   };
 
   if (!currentLine) {
-    return (
-      <div style={{
-        fontSize: '24px',
-        textAlign: 'center',
-        padding: '40px',
-        color: 'black'
-      }}>
-        Ready to play...
-      </div>
-    );
+    return null;
   }
 
   return (

@@ -73,6 +73,12 @@ function App() {
     const unsubscribe = beatSchedulerRef.current.onBeat(() => {
       setTotalBeatCount(prev => {
         const newTotalBeat = prev + 1
+        const currentBeat = (newTotalBeat - 1) % 4
+        const currentLine = lyricsRef.current?.lines[Math.floor((newTotalBeat - 1) / 4) % (lyricsRef.current?.lines.length || 1)]
+        const currentMapping = currentLine?.beatMappings.find(m => m.beat === currentBeat)
+        const word = currentMapping?.skip ? '(silent)' : currentMapping?.word || '(none)'
+        
+        console.log(`Beat ${newTotalBeat - 1}: ${word}`)
         
         // Advance to next line on beat 1 of each measure (beats 1,5,9,13...)
         if (newTotalBeat > 1 && (newTotalBeat - 1) % 4 === 0) {
@@ -127,7 +133,7 @@ function App() {
   }
 
   const currentLine = lyricsRef.current?.lines[currentLineIndex] || null
-  const currentBeat = totalBeatCount % 4 // 0-3 for current beat within line/measure
+  const currentBeat = totalBeatCount > 0 ? (totalBeatCount - 1) % 4 : 0 // 0-3 for current beat within line/measure
 
   return (
     <>
