@@ -4,6 +4,7 @@ import { LyricsRenderer } from './LyricsRenderer'
 import { LyricsParser, type ParsedLyrics } from './LyricsParser'
 import Pulsehead from './Pulsehead'
 import './App.css'
+import './slider-styles.css'
 
 // Dandelion lyrics embedded
 const DANDELION_LYRICS = `TITLE: DANDELION
@@ -82,11 +83,8 @@ function App() {
         
         // Advance to next line on beat 1 of each measure (beats 1,5,9,13...)
         if (newTotalBeat > 1 && (newTotalBeat - 1) % 4 === 0) {
-          console.log(`Advancing line at beat ${newTotalBeat}`);
           setCurrentLineIndex(prevLine => {
-            const newLine = (prevLine + 1) % (lyricsRef.current?.lines.length || 0);
-            console.log(`Line changed from ${prevLine} to ${newLine}`);
-            return newLine;
+            return (prevLine + 1) % (lyricsRef.current?.lines.length || 0);
           })
         }
         
@@ -148,32 +146,48 @@ function App() {
         <Pulsehead beatScheduler={beatSchedulerRef.current} />
       )}
 
-      {/* Controls - positioned at bottom */}
-      <div className="controls" style={{ position: 'fixed', bottom: '20px', left: '50%', transform: 'translateX(-50%)' }}>
-        <div className="control-panel">
-          <button 
-            className="play-pause-btn"
-            onClick={handlePlayPause}
-          >
-            {isPlaying ? '⏸️ Pause' : '▶️ Play'}
-          </button>
-          
-          <div className="bpm-control">
-            <label htmlFor="bpm">BPM: {bpm}</label>
-            <input
-              id="bpm"
-              type="range"
-              min="60"
-              max="200"
-              value={bpm}
-              onChange={handleBpmChange}
-              className="bpm-slider"
-            />
-          </div>
-          
-          <div style={{ marginLeft: '20px', fontSize: '14px', color: '#666' }}>
-            Line: {currentLineIndex + 1} | Beat: {currentBeat + 1}
-          </div>
+      {/* Controls - positioned at top right */}
+      <div style={{ position: 'fixed', top: '20px', right: '20px', display: 'flex', alignItems: 'center', gap: '15px' }}>
+        <button 
+          onClick={handlePlayPause}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            fontSize: '30px',
+            cursor: 'pointer',
+            padding: '0',
+            lineHeight: '1'
+          }}
+        >
+          {isPlaying ? '⏸️' : '▶️'}
+        </button>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ 
+            fontSize: '18px', 
+            fontWeight: 'bold', 
+            color: '#333',
+            minWidth: '40px',
+            textAlign: 'center'
+          }}>
+            {bpm}
+          </span>
+          <input
+            type="range"
+            min="60"
+            max="200"
+            value={bpm}
+            onChange={handleBpmChange}
+            style={{
+              width: '120px',
+              height: '8px',
+              borderRadius: '4px',
+              background: `linear-gradient(to right, #44ff44 0%, #44ff44 ${(bpm-60)/(200-60)*100}%, #ddd ${(bpm-60)/(200-60)*100}%, #ddd 100%)`,
+              outline: 'none',
+              appearance: 'none',
+              cursor: 'pointer'
+            }}
+          />
         </div>
       </div>
     </>

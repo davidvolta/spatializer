@@ -26,4 +26,27 @@
 
 **Key Technical Achievement:** Discovered and solved React state timing lag (16-33ms) by using direct DOM manipulation for beat-synchronized visuals while keeping React for UI components.
 
+### Phase 2: Lyrics Preview with Beat-Synced Word Highlighting
+
+**Goal:** Transform Spatializer from a visual metronome into a lyrical rhythm experience where THE WORDS ARE THE SYNC. Text files with markup trigger word highlighting on beats.
+
+**Success Criteria - ALL COMPLETED:**
+- [x] Parse bracket markup syntax: `[word]` and `[-]` (silent beats)
+- [x] Display full line of text on screen with clean typography
+- [x] Turn marked words red precisely on metronome beats
+- [x] Maintain sample-accurate timing from Phase 1
+- [x] Handle beat counting and word sequence mapping (4 beats per line)
+- [x] Clean UI integration with redesigned top-right controls
+- [x] Hide `[-]` rest marks from display while preserving timing
+- [x] Fix off-by-one errors in beat calculation
+
+**BONUS COMPLETED:**
+- [x] Cool BPM slider with gradient fill and custom styling
+- [x] Transparent play/pause button (just emoji, no circle)
+- [x] Console logging for beat debugging: "Beat 0: word"
+- [x] Proper OOP architecture fix in BeatScheduler (lazy initialization)
+- [x] Line advancement timing perfected (every 4 beats)
+
+**Key Technical Achievement:** Successfully synchronized lyrics to beats with sample-accurate timing, creating a karaoke-style experience where words flash red precisely on their musical beats.
+
 ---

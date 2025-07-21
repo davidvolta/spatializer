@@ -201,6 +201,8 @@ This project uses a daily workflow system:
 **CRITICAL:** When TODAY.md is completed (🎉 confetti moment!):
 
 1. **Immediately archive** - Move completed TODAY.md to PAST.md with completion date
+   - **Check PAST.md first** - If today's date already exists, add the completed task to that existing date section
+   - **Don't create duplicate dates** - Multiple tasks completed on the same day go under one date header
 2. **Create new TODAY.md** - Prompt user to pick next task:
    - Option A: "Pick from FUTURE.md priorities (1-5)"
    - Option B: "Define new custom task"
