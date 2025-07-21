@@ -12,7 +12,8 @@
       "Bash(rm:*)",
       "Bash(node:*)",
       "Bash(git --version)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }

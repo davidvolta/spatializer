@@ -74,11 +74,13 @@ function App() {
       setTotalBeatCount(prev => {
         const newTotalBeat = prev + 1
         
-        // Advance to next line every 4 beats
-        if (newTotalBeat % 4 === 0 && newTotalBeat > 0) {
+        // Advance to next line on beat 1 of each measure (beats 1,5,9,13...)
+        if (newTotalBeat > 1 && (newTotalBeat - 1) % 4 === 0) {
+          console.log(`Advancing line at beat ${newTotalBeat}`);
           setCurrentLineIndex(prevLine => {
-            const totalLines = lyricsRef.current?.lines.length || 0
-            return (prevLine + 1) % totalLines
+            const newLine = (prevLine + 1) % (lyricsRef.current?.lines.length || 0);
+            console.log(`Line changed from ${prevLine} to ${newLine}`);
+            return newLine;
           })
         }
         
