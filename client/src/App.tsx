@@ -120,9 +120,7 @@ function App() {
   const currentLine = lyricsRef.current?.lines[currentLineIndex] || null
   const currentBeat = totalBeatCount > 0 ? (totalBeatCount - 1) % 4 : 0 // 0-3 for current beat within line/measure
 
-  if (!lyricsLoaded) {
-    return <div>Loading lyrics...</div>
-  }
+  // Remove loading flash - just render immediately
 
   return (
     <>
