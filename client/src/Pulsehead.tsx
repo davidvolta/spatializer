@@ -13,11 +13,15 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const trailHistory = useRef<{timestamp: number, y: number}[]>([]);
   const [yPosition, setYPosition] = useState(0);
+  const pausedTimeRef = useRef(0);
+  const pauseStartTimeRef = useRef<number | null>(null);
+  const currentYPositionRef = useRef(0);
 
   useEffect(() => {
     // Initialize pulsehead at top position (beat 0 peak)  
     if (pulseheadRef.current) {
       pulseheadRef.current.style.transform = 'translateY(100px)';
+      pulseheadRef.current.style.opacity = '1';
     }
   }, []);
 
@@ -29,19 +33,18 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
     const animate = () => {
       if (!pulseheadRef.current || !canvasRef.current) return;
       
-      // Only animate if beat scheduler is playing
+      // Handle pause/resume timing
       if (!beatScheduler.isPlaying()) {
-        // Hide pulsehead when not playing
-        if (pulseheadRef.current) {
-          pulseheadRef.current.style.opacity = '0';
+        // Freeze animation - track pause duration
+        if (pauseStartTimeRef.current === null) {
+          pauseStartTimeRef.current = performance.now();
         }
         animationId = requestAnimationFrame(animate);
         return;
-      }
-      
-      // Show pulsehead when playing
-      if (pulseheadRef.current) {
-        pulseheadRef.current.style.opacity = '1';
+      } else if (pauseStartTimeRef.current !== null) {
+        // Resuming - add paused duration to total
+        pausedTimeRef.current += performance.now() - pauseStartTimeRef.current;
+        pauseStartTimeRef.current = null;
       }
       
       if (startTime === null) {
@@ -49,7 +52,7 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
       }
       
       const currentTime = performance.now();
-      const elapsed = currentTime - startTime;
+      const elapsed = currentTime - startTime - pausedTimeRef.current;
       const beatDuration = (60 / 73) * 1000; // ms per beat at 73 BPM
       const progress = (elapsed % beatDuration) / beatDuration;
       const totalBeats = elapsed / beatDuration;
@@ -58,7 +61,14 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
       const sineValue = Math.cos((totalBeats + 1) * Math.PI);
       const yPosition = sineValue * 100; // Even beats at top (+100px), odd beats at bottom (-100px)
       
-      pulseheadRef.current.style.transform = `translateY(${yPosition}px)`;
+      // Always show pulsehead and update position
+      if (pulseheadRef.current) {
+        pulseheadRef.current.style.transform = `translateY(${yPosition}px)`;
+        pulseheadRef.current.style.opacity = '1';
+      }
+      
+      // Store current position for pause
+      currentYPositionRef.current = yPosition;
       
       // Calculate color transition based on Y position
       // From 0 to +100px: stay grey

@@ -22,8 +22,8 @@ export class BeatScheduler {
     try {
       console.log('Attempting to load background music...');
       
-      // Fetch the file as ArrayBuffer for better control
-      const response = await fetch("/music/dandelion.mp3");
+      // Try .wav file instead of .mp3 for better compatibility
+      const response = await fetch("/music/dandelion.wav");
       if (!response.ok) {
         throw new Error(`Failed to fetch audio: ${response.status}`);
       }
@@ -41,6 +41,9 @@ export class BeatScheduler {
       
       // Create Tone.Player with the decoded buffer
       this.backgroundMusic = new Tone.Player(audioBuffer).toDestination();
+      
+      // Set it to loop
+      this.backgroundMusic.loop = true;
       console.log('Background music loaded successfully');
     } catch (error) {
       console.error('Background music loading failed:', error);
@@ -80,8 +83,9 @@ export class BeatScheduler {
     // Start background music if loaded and ready
     if (this.backgroundMusic) {
       console.log('Starting background music...');
-      this.backgroundMusic.start();
-      console.log('Background music start() called');
+      // Sync with Transport for proper timing
+      this.backgroundMusic.sync().start(0);
+      console.log('Background music synced and started');
     } else {
       console.log('No background music to start');
     }
@@ -101,7 +105,13 @@ export class BeatScheduler {
   }
 
   pause() {
+    console.log('Pausing... Transport state:', Tone.Transport.state);
     Tone.Transport.pause();
+  }
+
+  resume() {
+    console.log('Resuming... Transport state:', Tone.Transport.state);
+    Tone.Transport.start();
   }
 
   setBPM(bpm: number) {
