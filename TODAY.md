@@ -1,20 +1,19 @@
-# TODAY - Monday, July 21st, 2025
+# TODAY - Tuesday, July 22nd, 2025
 
-## 🥇 Trails (Visual Rhythm Visualization)
-*Estimated: 1 full session - Complex visual system*
+## 🥇 True Pause/Resume Functionality
+*Estimated: 0.5 session - UX improvement*
 
 ### Core Concept
-Complete the core Spatializer vision: rhythm becomes a spatial trail across time. Pulsehead moves vertically with easing curves, leaving behind trails that visualize groove and anticipation.
+Implement proper pause/resume behavior where play/pause maintains position instead of stopping and restarting from beginning.
 
 ### Key Features
-- Y-axis pulsehead animation with musical easing
-- Continuous trail rendering (bspline curves)  
-- Time flow visualization (left-to-right movement)
-- Grid system integration from design docs
+- Pause maintains current position in music, animation, and lyrics
+- Resume continues from exact pause point
+- Background music pauses instead of stopping
+- Pulsehead animation freezes in place during pause
 
 ### Technical Scope
-- Three.js integration for trail rendering
-- EaseLibrary for arrival curve patterns
-- Timeline/history system for trail data
-
----
+- Add resume() method to BeatScheduler
+- Modify pause() to handle background music properly
+- Update App.tsx to use pause/resume instead of stop/start
+- Prevent animation resets in Pulsehead component
