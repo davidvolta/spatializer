@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import * as Tone from 'tone'
 import { BeatScheduler } from './BeatScheduler'
 import { LyricsRenderer } from './LyricsRenderer'
 import { LyricsParser, type ParsedLyrics } from './LyricsParser'
@@ -76,6 +77,27 @@ function App() {
 
   const handlePlayPause = async () => {
     if (!beatSchedulerRef.current) return
+
+    try {
+      // MOBILE FIX: Explicit audio context activation
+      if (Tone.getContext().state !== 'running') {
+        // Force start Tone.js (required for mobile)
+        await Tone.start();
+        
+        // Double-check and resume if still suspended
+        if (Tone.getContext().state === 'suspended') {
+          await Tone.getContext().resume();
+        }
+        
+        // Play a brief silent sound to fully activate audio pipeline
+        const unlock = new Tone.Oscillator(440, "sine").toDestination();
+        unlock.volume.value = -Infinity; // Silent
+        unlock.start();
+        unlock.stop("+0.01");
+      }
+    } catch (error) {
+      console.error('Failed to activate audio context:', error);
+    }
 
     if (isPlaying) {
       beatSchedulerRef.current.pause()

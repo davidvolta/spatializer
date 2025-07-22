@@ -25,8 +25,8 @@ export class BeatScheduler {
     try {
       console.log('Attempting to load background music...');
       
-      // Try .wav file instead of .mp3 for better compatibility
-      const response = await fetch("/music/dandelion.wav");
+      // Try .mp3 file for better mobile compatibility
+      const response = await fetch("/music/dandelion.mp3");
       if (!response.ok) {
         throw new Error(`Failed to fetch audio: ${response.status}`);
       }
