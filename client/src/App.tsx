@@ -46,12 +46,12 @@ function App() {
         
         // Advance to next line between measures (after beat 4, before beat 1)
         if (newTotalBeat > 1 && (newTotalBeat - 1) % 4 === 3) {
-          // Use setTimeout to advance during the gap between beat 4 and beat 1
+          // Use setTimeout to advance shortly after beat 4
           setTimeout(() => {
             setCurrentLineIndex(prevLine => {
               return (prevLine + 1) % (lyricsRef.current?.lines.length || 0);
             })
-          }, 300); // Advance 300ms after beat 4 (halfway to next beat)
+          }, 100); // Advance 100ms after beat 4 (earlier transition)
         }
         
         return newTotalBeat

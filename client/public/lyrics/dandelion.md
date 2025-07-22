@@ -9,7 +9,7 @@ with [promises] [I] don't [keep] [-]
 I [stood] up [on] a [sunny] [day], 
 laid [down] [in] the [night] [-]
 Woah-[woh],[oh] [oh], 
-[I]'m a dande[lion] [-] [-] [-]
+[I'm] a dande[lion] [-] [-] [-]
 
 [I've] been [picked] and [held] real [tight] 
 in an [I] love [you] [bouquet] [-]
@@ -18,7 +18,7 @@ like [I] was [in] the [way] [-]
 But [I] push [through] a [sidewalk] [crack] 
 and [come] back [every] [time] [-]
 Woah-[woh],[oh] [oh], 
-[I]'m a dande[lion] [-] [-] [-]
+[I'm] a dande[lion] [-] [-] [-]
 
 [Dande] [lion] [-] [-] [-], 
 We're just [dancing] [in] the [breeze] [-]
@@ -27,7 +27,7 @@ Not a [flower] [not] a [weed] [-]
 [You] can [keep] your [roses] [-] 
 And [I'll] keep [growing] [wild] [-]
 Woah-[woh],[oh] [oh], 
-[I]'m a dande[lion] [-] [-] [-]
+[I'm] a dande[lion] [-] [-] [-]
 
 I've [never] [heard] a [bettеr] [song] 
 than [rain]drops [falling] [down] [-]
@@ -36,7 +36,7 @@ than [where] I [am] right [now] [-]
 So [I'm] just [gonna] [stay] right [here] 
 and [watch] the [world] go [by] [-]
 Woah-[woh],[oh] [oh], 
-[I]'m a dande[lion] [-] [-] [-]
+[I'm] a dande[lion] [-] [-] [-]
 
 [Dande] [lion] [-] [-] [-], 
 We're just [dancing] [in] the [breeze] [-]
@@ -45,4 +45,4 @@ Not a [flower] [not] a [weed] [-]
 [You] can [keep] your [roses] [-] 
 And [I]'ll keep [growing] [wild] [-]
 Woah-[woh],[oh] [oh], 
-[I]'m a dande[lion] [-] [-] [-]
+[I'm] a dande[lion] [-] [-] [-]

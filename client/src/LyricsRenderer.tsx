@@ -35,8 +35,8 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
             lineRef.current.style.opacity = '1';
           }
           setIsTransitioning(false);
-        }, 200);
-      }, 200);
+        }, 100);
+      }, 100);
     }
   }, [currentLine, displayLine, isTransitioning]);
 
@@ -114,7 +114,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
         fontFamily: 'Arial, sans-serif',
         lineHeight: 1.5,
         maxWidth: '90vw',
-        transition: 'opacity 0.2s ease-in-out',
+        transition: 'opacity 0.1s ease-in-out',
         opacity: 1
       }}
     >

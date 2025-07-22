@@ -48,6 +48,7 @@
   border-radius: 50%;
   background-color: #808080;
   transition: background-color 0.1s;
+  transform: translateY(100px);
 }
 
 .pulsehead.flashing {
