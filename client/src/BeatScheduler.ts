@@ -10,7 +10,7 @@ export class BeatScheduler {
   private isStarted = false;
   private beatCount = 0;
 
-  constructor(private initialBPM: number = 100) {
+  constructor(private initialBPM: number = 73) {
     // Only set initial state - no external operations
   }
 

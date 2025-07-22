@@ -57,7 +57,7 @@ Woah-[woh],[oh] [oh],
 
 function App() {
   const [isPlaying, setIsPlaying] = useState(false)
-  const [bpm, setBpm] = useState(100)
+  const [bpm, setBpm] = useState(73)
   const [totalBeatCount, setTotalBeatCount] = useState(0)
   const [currentLineIndex, setCurrentLineIndex] = useState(0)
   const beatSchedulerRef = useRef<BeatScheduler | null>(null)

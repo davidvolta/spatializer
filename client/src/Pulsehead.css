@@ -10,6 +10,29 @@
   pointer-events: none;
 }
 
+.reference-lines {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.reference-line {
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background-color: #CCCCCC;
+  left: 0;
+}
+
+.reference-line.upper {
+  top: calc(50% - 100px);
+}
+
+.reference-line.lower {
+  top: calc(50% + 100px);
+}
+
 .pulsehead {
   width: 60px;
   height: 60px;

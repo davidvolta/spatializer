@@ -21,12 +21,12 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
       span.style.color = 'black';
     });
 
-    // Flash the current beat's word red
+    // Flash the current beat's word red (only on odd beats)
     const currentMapping = currentLine.beatMappings.find(
       mapping => mapping.beat === currentBeat
     );
 
-    if (currentMapping && currentMapping.word && !currentMapping.skip) {
+    if (currentMapping && currentMapping.word && !currentMapping.skip && currentBeat % 2 === 0) {
       const wordSpan = wordRefs.current.get(currentMapping.word.toLowerCase());
       if (wordSpan) {
         wordSpan.style.color = '#FF0000';
