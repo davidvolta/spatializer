@@ -47,13 +47,32 @@
   height: 60px;
   border-radius: 50%;
   background-color: #808080;
-  transition: background-color 0.3s ease-in-out;
+  /* Color transitions handled by JavaScript animation */
   transform: translateY(100px);
+  opacity: 0;
 }
 
 .pulsehead.flashing {
   background-color: #0000FF;
   animation: glow-explosion 0.3s ease-out;
+}
+
+.pulsehead::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px; /* 50% of the 60px pulsehead */
+  height: 30px;
+  border-radius: 50%;
+  background-color: white;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.pulsehead.flashing::after {
+  opacity: 1;
 }
 
 @keyframes glow-explosion {

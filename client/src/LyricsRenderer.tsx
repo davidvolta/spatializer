@@ -70,7 +70,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
       const wordSpan = wordRefs.current.get(currentMapping.word.toLowerCase());
       if (wordSpan) {
         wordSpan.style.color = '#0000FF'; // Full blue for active beat word
-        wordSpan.style.fontWeight = 'bold'; // Bold for active beat word
+        wordSpan.style.fontWeight = 'normal'; // Normal weight for active beat word
       }
     }
   }, [currentBeat, displayLine]);
@@ -120,13 +120,13 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
         top: 'calc(50% - 250px)', // 150px above the upper reference line (which is at 50% - 100px) to make space for glow
         left: '50%',
         transform: 'translateX(-50%)',
-        fontSize: '24px',
+        fontSize: '48px',
         textAlign: 'center',
         padding: '20px',
         color: 'black',
-        fontFamily: 'Arial, sans-serif',
+        fontFamily: 'Inter, Arial, sans-serif',
         lineHeight: 1.5,
-        maxWidth: '90vw',
+        width: '100vw',
         transition: 'opacity 0.1s ease-in-out',
         opacity: 1
       }}

@@ -31,8 +31,17 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
       
       // Only animate if beat scheduler is playing
       if (!beatScheduler.isPlaying()) {
+        // Hide pulsehead when not playing
+        if (pulseheadRef.current) {
+          pulseheadRef.current.style.opacity = '0';
+        }
         animationId = requestAnimationFrame(animate);
         return;
+      }
+      
+      // Show pulsehead when playing
+      if (pulseheadRef.current) {
+        pulseheadRef.current.style.opacity = '1';
       }
       
       if (startTime === null) {
@@ -50,6 +59,29 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
       const yPosition = sineValue * 100; // Even beats at top (+100px), odd beats at bottom (-100px)
       
       pulseheadRef.current.style.transform = `translateY(${yPosition}px)`;
+      
+      // Calculate color transition based on Y position
+      // From 0 to +100px: stay grey
+      // From 0 to -100px: transition grey to blue with easing
+      let colorProgress = 0;
+      if (yPosition < 0) {
+        // Moving towards top (-100px), use ease-in
+        const normalizedPosition = Math.abs(yPosition) / 100; // 0 to 1
+        colorProgress = normalizedPosition * normalizedPosition; // ease-in (quadratic)
+      }
+      
+      // Interpolate between grey (#808080) and blue (#0000FF)
+      const greyR = 128, greyG = 128, greyB = 128;
+      const blueR = 0, blueG = 0, blueB = 255;
+      
+      const r = Math.round(greyR + (blueR - greyR) * colorProgress);
+      const g = Math.round(greyG + (blueG - greyG) * colorProgress);
+      const b = Math.round(greyB + (blueB - greyB) * colorProgress);
+      
+      // Only update color if not currently flashing
+      if (!pulseheadRef.current.classList.contains('flashing')) {
+        pulseheadRef.current.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+      }
       
       // Record current Y position with timestamp (pen marking the paper)
       trailHistory.current.push({
