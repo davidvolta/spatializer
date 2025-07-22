@@ -16,9 +16,9 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
   const currentYPositionRef = useRef(0);
 
   useEffect(() => {
-    // Initialize pulsehead at top position (beat 0 peak)  
+    // Initialize pulsehead at bottom position (beat 0 start)
     if (pulseheadRef.current) {
-      pulseheadRef.current.style.transform = 'translateY(100px)';
+      pulseheadRef.current.style.transform = 'translateY(-100px)';
       pulseheadRef.current.style.opacity = '1';
     }
   }, []);
@@ -56,7 +56,7 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
       
       // Continuous sine wave animation  
       const sineValue = Math.cos(totalBeats * Math.PI);
-      const yPosition = sineValue * 100; // Even beats at top (+100px), odd beats at bottom (-100px)
+      const yPosition = -sineValue * 100; // Start at bottom (-100px), moves to top (+100px) on beat
       
       // Always show pulsehead and update position
       if (pulseheadRef.current) {
