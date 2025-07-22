@@ -21,29 +21,39 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
 
   useEffect(() => {
     let beatCount = 0;
+    let animationId: number;
+    let startTime = performance.now();
+
+    const animate = () => {
+      if (!pulseheadRef.current) return;
+      
+      const currentTime = performance.now();
+      const elapsed = currentTime - startTime;
+      const beatDuration = (60 / 73) * 1000; // ms per beat at 73 BPM
+      const progress = (elapsed % beatDuration) / beatDuration;
+      const totalBeats = elapsed / beatDuration;
+      
+      // Continuous sine wave animation
+      const sineValue = Math.cos((totalBeats + 1) * Math.PI);
+      const yPosition = sineValue * -100;
+      
+      pulseheadRef.current.style.transform = `translateY(${yPosition}px)`;
+      
+      animationId = requestAnimationFrame(animate);
+    };
 
     const unsubscribe = beatScheduler.onBeat((event: BeatEvent) => {
       if (!pulseheadRef.current) return;
-
-      console.log(`Pulsehead beat ${beatCount}, Y position will be:`, Math.sin(beatCount * Math.PI) * 100);
 
       // Clear any existing flash timeout
       if (flashTimeoutRef.current) {
         clearTimeout(flashTimeoutRef.current);
       }
 
-      // Only flash on odd beats (1, 3) - when at bottom of sine wave (+100px)
+      // Only flash on even beats (0, 2) - when at top of sine wave (-100px)
       if (beatCount % 2 === 0) {
         pulseheadRef.current.classList.add('flashing');
       }
-
-      // Calculate sine wave Y position (each beat is a peak)
-      // Use cosine so beat 0 = top peak (-100px), beat 1 = bottom peak (+100px)
-      const sineValue = Math.cos(beatCount * Math.PI);
-      const newYPosition = sineValue * -100; // Scale and invert: +1 = -100px (top), -1 = +100px (bottom)
-      
-      // Update Y position via direct DOM manipulation for sample-accurate timing
-      pulseheadRef.current.style.transform = `translateY(${newYPosition}px)`;
       
       beatCount++;
 
@@ -55,9 +65,13 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
       }, 150);
     });
 
+    // Start animation
+    animationId = requestAnimationFrame(animate);
+
     // Cleanup on unmount
     return () => {
       unsubscribe();
+      cancelAnimationFrame(animationId);
       if (flashTimeoutRef.current) {
         clearTimeout(flashTimeoutRef.current);
       }

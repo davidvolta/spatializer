@@ -38,7 +38,7 @@
   height: 60px;
   border-radius: 50%;
   background-color: #808080;
-  transition: background-color 0.1s ease-out;
+  transition: background-color 0.1s;
 }
 
 .pulsehead.flashing {
