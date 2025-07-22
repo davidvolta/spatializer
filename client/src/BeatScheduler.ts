@@ -18,13 +18,18 @@ export class BeatScheduler {
   private async initializeTransport() {
     await Tone.start();
     
-    // Create tick sound - sharp, percussive click
+    // Create tick sound - sharp, percussive click with softer volume
     const synth = new Tone.MembraneSynth({
       pitchDecay: 0.01,
       octaves: 2,
       oscillator: { type: 'sine' },
       envelope: { attack: 0.001, decay: 0.02, sustain: 0, release: 0.02 }
-    }).toDestination();
+    });
+    
+    // Add gain node to control volume - set to 30% of original volume
+    const gainNode = new Tone.Gain(0.3);
+    synth.connect(gainNode);
+    gainNode.toDestination();
     
     // Load background music using ArrayBuffer approach
     try {

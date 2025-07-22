@@ -47,10 +47,23 @@
   height: 60px;
   border-radius: 50%;
   background-color: #808080;
-  transition: background-color 0.1s;
+  transition: background-color 0.3s ease-in-out;
   transform: translateY(100px);
 }
 
 .pulsehead.flashing {
   background-color: #0000FF;
+  animation: glow-explosion 0.3s ease-out;
+}
+
+@keyframes glow-explosion {
+  0% {
+    box-shadow: 0 0 0 rgba(0, 0, 255, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 50px 20px rgba(0, 0, 255, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 80px 30px rgba(0, 0, 255, 0);
+  }
 }

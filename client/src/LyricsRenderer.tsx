@@ -117,7 +117,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
       ref={lineRef}
       style={{
         position: 'fixed',
-        top: 'calc(50% - 200px)', // 100px above the upper reference line (which is at 50% - 100px)
+        top: 'calc(50% - 250px)', // 150px above the upper reference line (which is at 50% - 100px) to make space for glow
         left: '50%',
         transform: 'translateX(-50%)',
         fontSize: '24px',
