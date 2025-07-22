@@ -44,12 +44,24 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
   useEffect(() => {
     if (!displayLine || !lineRef.current) return;
 
-    // Reset all words to black
-    wordRefs.current.forEach(span => {
-      span.style.color = 'black';
+    // Reset all words: beat words that get highlighted to light red, others to black
+    const highlightedBeatWords = new Set(
+      displayLine.beatMappings
+        .filter(m => m.word && !m.skip && m.beat % 2 === 0) // Only even beats get highlighted
+        .map(m => m.word.toLowerCase())
+    );
+    
+    wordRefs.current.forEach((span, word) => {
+      if (highlightedBeatWords.has(word)) {
+        span.style.color = '#FF9999'; // Light red for words that get highlighted
+        span.style.fontWeight = 'normal'; // Reset to normal weight
+      } else {
+        span.style.color = 'black'; // Black for all other words
+        span.style.fontWeight = 'normal'; // Reset to normal weight
+      }
     });
 
-    // Flash the current beat's word red (only on even beats)
+    // Highlight the current beat's word full red (only on even beats)
     const currentMapping = displayLine.beatMappings.find(
       mapping => mapping.beat === currentBeat
     );
@@ -57,7 +69,8 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
     if (currentMapping && currentMapping.word && !currentMapping.skip && currentBeat % 2 === 0) {
       const wordSpan = wordRefs.current.get(currentMapping.word.toLowerCase());
       if (wordSpan) {
-        wordSpan.style.color = '#FF0000';
+        wordSpan.style.color = '#FF0000'; // Full red for active beat word
+        wordSpan.style.fontWeight = 'bold'; // Bold for active beat word
       }
     }
   }, [currentBeat, displayLine]);
