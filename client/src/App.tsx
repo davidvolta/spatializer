@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import * as Tone from 'tone'
 import { BeatScheduler } from './BeatScheduler'
 import { LyricsRenderer } from './LyricsRenderer'
 import { LyricsParser, type ParsedLyrics } from './LyricsParser'
@@ -77,11 +76,6 @@ function App() {
 
   const handlePlayPause = async () => {
     if (!beatSchedulerRef.current) return
-
-    // Ensure audio context is active for mobile compatibility
-    if (Tone.getContext().state !== 'running') {
-      await Tone.start();
-    }
 
     if (isPlaying) {
       beatSchedulerRef.current.pause()
