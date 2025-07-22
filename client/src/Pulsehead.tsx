@@ -10,6 +10,8 @@ interface PulseheadProps {
 export default function Pulsehead({ beatScheduler }: PulseheadProps) {
   const pulseheadRef = useRef<HTMLDivElement | null>(null);
   const flashTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const trailHistory = useRef<{timestamp: number, y: number}[]>([]);
   const [yPosition, setYPosition] = useState(0);
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
     let startTime = performance.now();
 
     const animate = () => {
-      if (!pulseheadRef.current) return;
+      if (!pulseheadRef.current || !canvasRef.current) return;
       
       const currentTime = performance.now();
       const elapsed = currentTime - startTime;
@@ -38,6 +40,49 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
       const yPosition = sineValue * 100; // Flip sign so even beats are at +100px
       
       pulseheadRef.current.style.transform = `translateY(${yPosition}px)`;
+      
+      // Record current Y position with timestamp (pen marking the paper)
+      trailHistory.current.push({
+        timestamp: currentTime,
+        y: yPosition
+      });
+      
+      // Keep only recent history (last 3 seconds of trail)
+      const maxAge = 3000;
+      trailHistory.current = trailHistory.current.filter(point => 
+        currentTime - point.timestamp < maxAge
+      );
+      
+      // Draw trail (paper moving left under the pen)
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        if (trailHistory.current.length > 1) {
+          const centerX = window.innerWidth / 2;
+          const centerY = window.innerHeight / 2;
+          const trailSpeed = 100; // pixels per second moving left
+          
+          ctx.strokeStyle = '#CCCCCC';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          
+          trailHistory.current.forEach((point, index) => {
+            const age = currentTime - point.timestamp;
+            const x = centerX - (age / 1000) * trailSpeed; // Move left based on age
+            const y = centerY + point.y;
+            
+            if (index === 0) {
+              ctx.moveTo(x, y);
+            } else {
+              ctx.lineTo(x, y);
+            }
+          });
+          
+          ctx.stroke();
+        }
+      }
       
       animationId = requestAnimationFrame(animate);
     };
@@ -80,6 +125,12 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
 
   return (
     <div className="pulsehead-container">
+      <canvas 
+        ref={canvasRef}
+        className="trail-canvas"
+        width={window.innerWidth}
+        height={window.innerHeight}
+      />
       <div className="reference-lines">
         <div className="reference-line upper"></div>
         <div className="reference-line lower"></div>
