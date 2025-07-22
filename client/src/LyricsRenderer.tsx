@@ -55,13 +55,33 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
       if (highlightedBeatWords.has(word)) {
         span.style.color = '#9999FF'; // Light blue for words that get highlighted
         span.style.fontWeight = 'normal'; // Reset to normal weight
+        span.style.transition = 'color 0.2s ease-out, text-shadow 0.2s ease-out'; // Add smooth transitions
+        span.style.textShadow = 'none'; // Reset glow
       } else {
         span.style.color = 'black'; // Black for all other words
         span.style.fontWeight = 'normal'; // Reset to normal weight
+        span.style.transition = 'color 0.2s ease-out, text-shadow 0.2s ease-out'; // Add smooth transitions
+        span.style.textShadow = 'none'; // Reset glow
       }
     });
 
-    // Highlight the current beat's word full red (only on even beats)
+    // Get the next beat's word and start pre-tick transition
+    const nextBeat = (currentBeat + 1) % 4;
+    const nextMapping = displayLine.beatMappings.find(
+      mapping => mapping.beat === nextBeat
+    );
+
+    // Start transition 200ms before next tick (if it's an even beat)
+    if (nextMapping && nextMapping.word && !nextMapping.skip && nextBeat % 2 === 0) {
+      const nextWordSpan = wordRefs.current.get(nextMapping.word.toLowerCase());
+      if (nextWordSpan) {
+        setTimeout(() => {
+          nextWordSpan.style.color = '#0000FF'; // Start transitioning to full blue
+        }, 400); // Start 200ms before the next beat (600ms beat duration - 200ms = 400ms)
+      }
+    }
+
+    // Highlight the current beat's word with full blue and glow (only on even beats)
     const currentMapping = displayLine.beatMappings.find(
       mapping => mapping.beat === currentBeat
     );
@@ -71,6 +91,14 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
       if (wordSpan) {
         wordSpan.style.color = '#0000FF'; // Full blue for active beat word
         wordSpan.style.fontWeight = 'normal'; // Normal weight for active beat word
+        wordSpan.style.textShadow = '0 0 10px #0000FF, 0 0 20px #0000FF'; // Blue glow effect
+        
+        // Remove glow after 200ms
+        setTimeout(() => {
+          if (wordSpan) {
+            wordSpan.style.textShadow = 'none';
+          }
+        }, 200);
       }
     }
   }, [currentBeat, displayLine]);

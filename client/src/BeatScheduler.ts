@@ -26,8 +26,8 @@ export class BeatScheduler {
       envelope: { attack: 0.001, decay: 0.02, sustain: 0, release: 0.02 }
     });
     
-    // Add gain node to control volume - set to 30% of original volume
-    const gainNode = new Tone.Gain(0.3);
+    // Add gain node to control volume - set to 0% (muted)
+    const gainNode = new Tone.Gain(0);
     synth.connect(gainNode);
     gainNode.toDestination();
     
