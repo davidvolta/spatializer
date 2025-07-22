@@ -11,7 +11,7 @@ function App() {
   const [bpm] = useState(73)
   const [totalBeatCount, setTotalBeatCount] = useState(0)
   const [currentLineIndex, setCurrentLineIndex] = useState(0)
-  const [crossfaderValue, setCrossfaderValue] = useState(0) // 0 = full instrumental, 100 = full vocal
+  const [vocalsEnabled, setVocalsEnabled] = useState(false) // false = instrumental, true = vocals
   const beatSchedulerRef = useRef<BeatScheduler | null>(null)
   const lyricsRef = useRef<ParsedLyrics | null>(null)
 
@@ -74,11 +74,11 @@ function App() {
   }, [bpm])
 
   useEffect(() => {
-    // Update crossfader when value changes
+    // Update vocals setting when changed
     if (beatSchedulerRef.current) {
-      beatSchedulerRef.current.setCrossfaderValue(crossfaderValue)
+      beatSchedulerRef.current.setVocalsEnabled(vocalsEnabled)
     }
-  }, [crossfaderValue])
+  }, [vocalsEnabled])
 
   const handlePlayPause = async () => {
     if (!beatSchedulerRef.current) return
@@ -120,8 +120,8 @@ function App() {
     }
   }
 
-  const handleCrossfaderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCrossfaderValue(Number(event.target.value))
+  const handleVocalsToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setVocalsEnabled(event.target.checked)
   }
 
   const currentLine = lyricsRef.current?.lines[currentLineIndex] || null
@@ -129,18 +129,17 @@ function App() {
 
   return (
     <>
-      {/* Cross-fader - positioned at top left */}
-      <div className="crossfader-container">
-        <div className="crossfader-label">Instrumental ← → Vocal</div>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          value={crossfaderValue}
-          onChange={handleCrossfaderChange}
-          className="crossfader-slider"
-        />
-        <div className="crossfader-value">{crossfaderValue}%</div>
+      {/* Vocals toggle - positioned at top left */}
+      <div className="vocals-container">
+        <label className="vocals-label">
+          <input
+            type="checkbox"
+            checked={vocalsEnabled}
+            onChange={handleVocalsToggle}
+            className="vocals-checkbox"
+          />
+          Vocals
+        </label>
       </div>
 
       {/* Lyrics Display - centered on screen */}

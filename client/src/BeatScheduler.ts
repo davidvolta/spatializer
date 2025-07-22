@@ -138,31 +138,13 @@ export class BeatScheduler {
     };
   }
 
-  setCrossfaderValue(value: number) {
-    // Clamp value between 0 and 100
-    const clampedValue = Math.max(0, Math.min(100, value));
-    
-    // Calculate volume levels (0 = full instrumental, 100 = full vocal)
-    const normalizedValue = clampedValue / 100; // 0.0 to 1.0
-    
+  setVocalsEnabled(enabled: boolean) {
     if (this.instrumentalTrack) {
-      // Instrumental: full volume at 0, silent at 100
-      if (normalizedValue >= 1.0) {
-        this.instrumentalTrack.volume.value = -Infinity; // Completely mute
-      } else {
-        // Fade from -6dB to -Infinity as crossfader increases
-        this.instrumentalTrack.volume.value = -6 - (normalizedValue * 48); // -6dB to -54dB range
-      }
+      this.instrumentalTrack.volume.value = enabled ? -Infinity : -6;
     }
     
     if (this.vocalTrack) {
-      // Vocal: silent at 0, full volume at 100
-      if (normalizedValue <= 0.0) {
-        this.vocalTrack.volume.value = -Infinity; // Completely mute
-      } else {
-        // Fade from -Infinity to -6dB as crossfader increases
-        this.vocalTrack.volume.value = -6 - ((1 - normalizedValue) * 48); // -54dB to -6dB range
-      }
+      this.vocalTrack.volume.value = enabled ? -6 : -Infinity;
     }
   }
 
