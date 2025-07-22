@@ -33,7 +33,7 @@ export class BeatScheduler {
       const instrumentalAudioBuffer = await Tone.getContext().decodeAudioData(instrumentalBuffer);
       
       this.instrumentalTrack = new Tone.Player(instrumentalAudioBuffer).toDestination();
-      this.instrumentalTrack.volume.value = -12; // Start at full instrumental volume
+      this.instrumentalTrack.volume.value = -6; // Start at full instrumental volume
       this.instrumentalTrack.loop = true;
       
       // Load vocal track
@@ -150,8 +150,8 @@ export class BeatScheduler {
       if (normalizedValue >= 1.0) {
         this.instrumentalTrack.volume.value = -Infinity; // Completely mute
       } else {
-        // Fade from -12dB to -Infinity as crossfader increases
-        this.instrumentalTrack.volume.value = -12 - (normalizedValue * 48); // -12dB to -60dB range
+        // Fade from -6dB to -Infinity as crossfader increases
+        this.instrumentalTrack.volume.value = -6 - (normalizedValue * 48); // -6dB to -54dB range
       }
     }
     
@@ -160,8 +160,8 @@ export class BeatScheduler {
       if (normalizedValue <= 0.0) {
         this.vocalTrack.volume.value = -Infinity; // Completely mute
       } else {
-        // Fade from -Infinity to -12dB as crossfader increases
-        this.vocalTrack.volume.value = -12 - ((1 - normalizedValue) * 48); // -60dB to -12dB range
+        // Fade from -Infinity to -6dB as crossfader increases
+        this.vocalTrack.volume.value = -6 - ((1 - normalizedValue) * 48); // -54dB to -6dB range
       }
     }
   }
