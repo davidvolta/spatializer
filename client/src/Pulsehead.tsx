@@ -24,10 +24,20 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
   useEffect(() => {
     let beatCount = 0;
     let animationId: number;
-    let startTime = performance.now();
+    let startTime: number | null = null;
 
     const animate = () => {
       if (!pulseheadRef.current || !canvasRef.current) return;
+      
+      // Only animate if beat scheduler is playing
+      if (!beatScheduler.isPlaying()) {
+        animationId = requestAnimationFrame(animate);
+        return;
+      }
+      
+      if (startTime === null) {
+        startTime = performance.now();
+      }
       
       const currentTime = performance.now();
       const elapsed = currentTime - startTime;
@@ -47,8 +57,8 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
         y: yPosition
       });
       
-      // Keep only recent history (last 3 seconds of trail)
-      const maxAge = 3000;
+      // Keep only recent history (last 8 seconds of trail)
+      const maxAge = 8000;
       trailHistory.current = trailHistory.current.filter(point => 
         currentTime - point.timestamp < maxAge
       );
@@ -90,6 +100,11 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
     const unsubscribe = beatScheduler.onBeat((event: BeatEvent) => {
       if (!pulseheadRef.current) return;
 
+      // Reset startTime on first beat of new playback
+      if (beatCount === 0) {
+        startTime = performance.now();
+      }
+
       // Clear any existing flash timeout
       if (flashTimeoutRef.current) {
         clearTimeout(flashTimeoutRef.current);
@@ -110,7 +125,7 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
       }, 150);
     });
 
-    // Start animation
+    // Start animation loop
     animationId = requestAnimationFrame(animate);
 
     // Cleanup on unmount

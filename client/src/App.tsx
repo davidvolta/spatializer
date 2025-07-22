@@ -44,11 +44,14 @@ function App() {
         
         console.log(`Beat ${newTotalBeat - 1}: ${word}`)
         
-        // Advance to next line on beat 1 of each measure (beats 1,5,9,13...)
-        if (newTotalBeat > 1 && (newTotalBeat - 1) % 4 === 0) {
-          setCurrentLineIndex(prevLine => {
-            return (prevLine + 1) % (lyricsRef.current?.lines.length || 0);
-          })
+        // Advance to next line between measures (after beat 4, before beat 1)
+        if (newTotalBeat > 1 && (newTotalBeat - 1) % 4 === 3) {
+          // Use setTimeout to advance during the gap between beat 4 and beat 1
+          setTimeout(() => {
+            setCurrentLineIndex(prevLine => {
+              return (prevLine + 1) % (lyricsRef.current?.lines.length || 0);
+            })
+          }, 300); // Advance 300ms after beat 4 (halfway to next beat)
         }
         
         return newTotalBeat
@@ -129,7 +132,7 @@ function App() {
           {isPlaying ? '⏸️' : '▶️'}
         </button>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <span style={{ 
             fontSize: '18px', 
             fontWeight: 'bold', 
@@ -155,7 +158,7 @@ function App() {
               cursor: 'pointer'
             }}
           />
-        </div>
+        </div> */}
       </div>
     </>
   )

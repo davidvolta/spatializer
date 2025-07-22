@@ -1,6 +1,8 @@
 TITLE: DANDELION
 ARTIST: BROOKE LEE
 
+[-] [-] [-] [-]
+
 [I've] been [ripped] right [out] of the [ground] 
 so my [roots] don't [run] too [deep] [-]
 And [I've] been [wished] on a [thousand] [times] 
@@ -11,10 +13,10 @@ Woah-[woh],[oh] [oh],
 [I]'m a dande[lion] [-] [-] [-]
 
 [I've] been [picked] and [held] real [tight] 
-in an [I] love [you] bou[quet] [-]
-[I]'ve been [simply] [cast] a[side] 
+in an [I] love [you] [bouquet] [-]
+[I]'ve been [simply] [cast] [aside] 
 like [I] was [in] the [way] [-]
-But [I] push [through] a [side]walk [crack] 
+But [I] push [through] a [sidewalk] [crack] 
 and [come] back [every] [time] [-]
 Woah-[woh],[oh] [oh], 
 [I]'m a dande[lion] [-] [-] [-]

@@ -29,8 +29,10 @@ export class BeatScheduler {
     
     // Schedule beat callbacks on every quarter note with precise timing
     Tone.Transport.scheduleRepeat((time) => {
-      // Play tick sound at precise time - short percussive hit
-      synth.triggerAttackRelease('C5', '64n', time);
+      // Only play tick sound on even beats (beatCount % 2 === 0)
+      if (this.beatCount % 2 === 0) {
+        synth.triggerAttackRelease('C5', '64n', time);
+      }
       
       // The callback will handle logging with word info
       this.beatCount++;
