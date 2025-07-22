@@ -9,7 +9,8 @@ export class BeatScheduler {
   private callbacks: Set<(event: BeatEvent) => void> = new Set();
   private isStarted = false;
   private beatCount = 0;
-  private backgroundMusic: Tone.Player | null = null;
+  private instrumentalTrack: Tone.Player | null = null;
+  private vocalTrack: Tone.Player | null = null;
 
   constructor(private initialBPM: number = 73) {
     // Only set initial state - no external operations
@@ -21,30 +22,35 @@ export class BeatScheduler {
     // Set master volume to audible level
     Tone.getDestination().volume.value = -6; // -6dB master volume
     
-    // Load background music using ArrayBuffer approach
+    // Load both instrumental and vocal tracks
     try {
-      // Try .mp3 file for better mobile compatibility
-      const response = await fetch("/music/dandelion.mp3");
-      if (!response.ok) {
-        throw new Error(`Failed to fetch audio: ${response.status}`);
+      // Load instrumental track
+      const instrumentalResponse = await fetch("/music/dandelion.mp3");
+      if (!instrumentalResponse.ok) {
+        throw new Error(`Failed to fetch instrumental: ${instrumentalResponse.status}`);
       }
+      const instrumentalBuffer = await instrumentalResponse.arrayBuffer();
+      const instrumentalAudioBuffer = await Tone.getContext().decodeAudioData(instrumentalBuffer);
       
-      const arrayBuffer = await response.arrayBuffer();
+      this.instrumentalTrack = new Tone.Player(instrumentalAudioBuffer).toDestination();
+      this.instrumentalTrack.volume.value = -12; // Start at full instrumental volume
+      this.instrumentalTrack.loop = true;
       
-      // Create audio buffer using Web Audio API directly
-      const audioBuffer = await Tone.getContext().decodeAudioData(arrayBuffer);
+      // Load vocal track
+      const vocalResponse = await fetch("/music/dandelion_full.mp3");
+      if (!vocalResponse.ok) {
+        throw new Error(`Failed to fetch vocal: ${vocalResponse.status}`);
+      }
+      const vocalBuffer = await vocalResponse.arrayBuffer();
+      const vocalAudioBuffer = await Tone.getContext().decodeAudioData(vocalBuffer);
       
-      // Create Tone.Player with the decoded buffer
-      this.backgroundMusic = new Tone.Player(audioBuffer).toDestination();
-      
-      // Set audible volume level
-      this.backgroundMusic.volume.value = -12; // -12dB should be clearly audible
-      
-      // Set it to loop
-      this.backgroundMusic.loop = true;
+      this.vocalTrack = new Tone.Player(vocalAudioBuffer).toDestination();
+      this.vocalTrack.volume.value = -Infinity; // Start muted (crossfader at 0)
+      this.vocalTrack.loop = true;
     } catch (error) {
-      console.error('Background music loading failed:', error);
-      this.backgroundMusic = null;
+      console.error('Audio track loading failed:', error);
+      this.instrumentalTrack = null;
+      this.vocalTrack = null;
     }
     
     Tone.Transport.bpm.value = this.initialBPM;
@@ -76,10 +82,12 @@ export class BeatScheduler {
     this.beatCount = 0;
     this.isStarted = true;
     
-    // Start background music if loaded and ready
-    if (this.backgroundMusic) {
-      // Sync with Transport for proper timing
-      this.backgroundMusic.sync().start(0);
+    // Start both tracks if loaded and ready
+    if (this.instrumentalTrack) {
+      this.instrumentalTrack.sync().start(0);
+    }
+    if (this.vocalTrack) {
+      this.vocalTrack.sync().start(0);
     }
     
     Tone.Transport.start();
@@ -88,9 +96,12 @@ export class BeatScheduler {
   stop() {
     Tone.Transport.stop();
     
-    // Stop background music if playing
-    if (this.backgroundMusic) {
-      this.backgroundMusic.stop();
+    // Stop both tracks if playing
+    if (this.instrumentalTrack) {
+      this.instrumentalTrack.stop();
+    }
+    if (this.vocalTrack) {
+      this.vocalTrack.stop();
     }
     
     this.isStarted = false; // Allow restart
@@ -125,6 +136,34 @@ export class BeatScheduler {
     return () => {
       this.callbacks.delete(callback);
     };
+  }
+
+  setCrossfaderValue(value: number) {
+    // Clamp value between 0 and 100
+    const clampedValue = Math.max(0, Math.min(100, value));
+    
+    // Calculate volume levels (0 = full instrumental, 100 = full vocal)
+    const normalizedValue = clampedValue / 100; // 0.0 to 1.0
+    
+    if (this.instrumentalTrack) {
+      // Instrumental: full volume at 0, silent at 100
+      if (normalizedValue >= 1.0) {
+        this.instrumentalTrack.volume.value = -Infinity; // Completely mute
+      } else {
+        // Fade from -12dB to -Infinity as crossfader increases
+        this.instrumentalTrack.volume.value = -12 - (normalizedValue * 48); // -12dB to -60dB range
+      }
+    }
+    
+    if (this.vocalTrack) {
+      // Vocal: silent at 0, full volume at 100
+      if (normalizedValue <= 0.0) {
+        this.vocalTrack.volume.value = -Infinity; // Completely mute
+      } else {
+        // Fade from -Infinity to -12dB as crossfader increases
+        this.vocalTrack.volume.value = -12 - ((1 - normalizedValue) * 48); // -60dB to -12dB range
+      }
+    }
   }
 
   dispose() {

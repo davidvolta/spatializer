@@ -84,3 +84,61 @@
   cursor: pointer;
   border: none;
 }
+
+/* Crossfader Styles */
+.crossfader-container {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 200px;
+}
+
+.crossfader-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+  text-align: center;
+}
+
+.crossfader-slider {
+  width: 180px;
+  height: 4px;
+  background: #ddd;
+  outline: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.crossfader-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #808080;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.crossfader-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #808080;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.crossfader-value {
+  font-size: 11px;
+  color: #666;
+  font-weight: 400;
+}

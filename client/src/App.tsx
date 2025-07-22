@@ -11,6 +11,7 @@ function App() {
   const [bpm] = useState(73)
   const [totalBeatCount, setTotalBeatCount] = useState(0)
   const [currentLineIndex, setCurrentLineIndex] = useState(0)
+  const [crossfaderValue, setCrossfaderValue] = useState(0) // 0 = full instrumental, 100 = full vocal
   const beatSchedulerRef = useRef<BeatScheduler | null>(null)
   const lyricsRef = useRef<ParsedLyrics | null>(null)
 
@@ -72,6 +73,13 @@ function App() {
     }
   }, [bpm])
 
+  useEffect(() => {
+    // Update crossfader when value changes
+    if (beatSchedulerRef.current) {
+      beatSchedulerRef.current.setCrossfaderValue(crossfaderValue)
+    }
+  }, [crossfaderValue])
+
   const handlePlayPause = async () => {
     if (!beatSchedulerRef.current) return
 
@@ -112,12 +120,29 @@ function App() {
     }
   }
 
+  const handleCrossfaderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCrossfaderValue(Number(event.target.value))
+  }
 
   const currentLine = lyricsRef.current?.lines[currentLineIndex] || null
   const currentBeat = totalBeatCount > 0 ? (totalBeatCount - 1) % 4 : 0 // 0-3 for current beat within line/measure
 
   return (
     <>
+      {/* Cross-fader - positioned at top left */}
+      <div className="crossfader-container">
+        <div className="crossfader-label">Instrumental ← → Vocal</div>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={crossfaderValue}
+          onChange={handleCrossfaderChange}
+          className="crossfader-slider"
+        />
+        <div className="crossfader-value">{crossfaderValue}%</div>
+      </div>
+
       {/* Lyrics Display - centered on screen */}
       <LyricsRenderer 
         currentLine={currentLine}
