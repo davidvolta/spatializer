@@ -18,19 +18,6 @@ export class BeatScheduler {
   private async initializeTransport() {
     await Tone.start();
     
-    // Create tick sound - sharp, percussive click with softer volume
-    const synth = new Tone.MembraneSynth({
-      pitchDecay: 0.01,
-      octaves: 2,
-      oscillator: { type: 'sine' },
-      envelope: { attack: 0.001, decay: 0.02, sustain: 0, release: 0.02 }
-    });
-    
-    // Add gain node to control volume - set to 0% (muted)
-    const gainNode = new Tone.Gain(0);
-    synth.connect(gainNode);
-    gainNode.toDestination();
-    
     // Load background music using ArrayBuffer approach
     try {
       console.log('Attempting to load background music...');
@@ -65,12 +52,6 @@ export class BeatScheduler {
     
     // Schedule beat callbacks on every quarter note with precise timing
     Tone.Transport.scheduleRepeat((time) => {
-      // Only play tick sound on even beats (beatCount % 2 === 0)
-      if (this.beatCount % 2 === 0) {
-        synth.triggerAttackRelease('C5', '64n', time);
-      }
-      
-      // The callback will handle logging with word info
       this.beatCount++;
       
       const beatEvent: BeatEvent = {

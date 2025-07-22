@@ -65,7 +65,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
       }
     });
 
-    // Two-beat anticipation cycle for even beats only
+    // Handle even beats (0, 2) - glow and full brightness when beat hits
     const currentMapping = displayLine.beatMappings.find(
       mapping => mapping.beat === currentBeat
     );
@@ -87,27 +87,6 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
       }
     }
 
-    // Handle odd beats (1, 3) - light up the NEXT even beat's word (no glow)
-    if (currentBeat % 2 === 1) {
-      const nextEvenBeat = (currentBeat + 1) % 4; // Will be 2 or 0
-      
-      // If nextEvenBeat is 0, we're looking for beat 0 of the NEXT measure, not current
-      // For now, only handle beat 2 within the current measure (beat 1 -> beat 2)
-      if (nextEvenBeat === 2) {
-        const nextMapping = displayLine.beatMappings.find(
-          mapping => mapping.beat === nextEvenBeat
-        );
-        
-        if (nextMapping && nextMapping.word && !nextMapping.skip) {
-          const nextWordSpan = wordRefs.current.get(nextMapping.word.toLowerCase());
-          if (nextWordSpan) {
-            nextWordSpan.style.color = '#0000FF'; // Light up to full blue, no glow yet
-            nextWordSpan.style.textShadow = 'none'; // Ensure no glow
-          }
-        }
-      }
-      // TODO: Handle beat 3 -> next measure's beat 0 (would need access to next line)
-    }
   }, [currentBeat, displayLine]);
 
   const createWordSpans = (text: string, beatMappings: any[]) => {
@@ -152,10 +131,10 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
       ref={lineRef}
       style={{
         position: 'fixed',
-        top: 'calc(50% - 250px)', // 150px above the upper reference line (which is at 50% - 100px) to make space for glow
+        top: 'calc(50% + 148px)', // 48px below the sine wave (50% + 100px + 48px)
         left: '50%',
         transform: 'translateX(-50%)',
-        fontSize: '48px',
+        fontSize: '24px', // Reduced from 48px to 24px (half size)
         textAlign: 'center',
         padding: '20px',
         color: 'black',
