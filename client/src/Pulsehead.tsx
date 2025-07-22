@@ -146,10 +146,6 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
         width={window.innerWidth}
         height={window.innerHeight}
       />
-      <div className="reference-lines">
-        <div className="reference-line upper"></div>
-        <div className="reference-line lower"></div>
-      </div>
       <div 
         ref={pulseheadRef}
         className="pulsehead"

@@ -1,7 +1,6 @@
 TITLE: DANDELION
 ARTIST: BROOKE LEE
 
-[-] [-] [-] [-]
 
 [I've] been [ripped] right [out] of the [ground] 
 so my [roots] don't [run] too [deep] [-]

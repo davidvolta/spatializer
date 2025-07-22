@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import type { ParsedLine } from './LyricsParser';
 
 interface LyricsRendererProps {
@@ -12,17 +12,45 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
 }) => {
   const lineRef = useRef<HTMLDivElement>(null);
   const wordRefs = useRef<Map<string, HTMLSpanElement>>(new Map());
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [displayLine, setDisplayLine] = useState<ParsedLine | null>(currentLine);
 
+  // Handle line changes with fade transition
   useEffect(() => {
-    if (!currentLine || !lineRef.current) return;
+    if (currentLine && currentLine !== displayLine && !isTransitioning) {
+      setIsTransitioning(true);
+      
+      // Fade out
+      if (lineRef.current) {
+        lineRef.current.style.opacity = '0';
+      }
+      
+      setTimeout(() => {
+        // Change content
+        setDisplayLine(currentLine);
+        
+        setTimeout(() => {
+          // Fade in
+          if (lineRef.current) {
+            lineRef.current.style.opacity = '1';
+          }
+          setIsTransitioning(false);
+        }, 200);
+      }, 200);
+    }
+  }, [currentLine, displayLine, isTransitioning]);
+
+  // Handle beat highlighting
+  useEffect(() => {
+    if (!displayLine || !lineRef.current) return;
 
     // Reset all words to black
     wordRefs.current.forEach(span => {
       span.style.color = 'black';
     });
 
-    // Flash the current beat's word red (only on odd beats)
-    const currentMapping = currentLine.beatMappings.find(
+    // Flash the current beat's word red (only on even beats)
+    const currentMapping = displayLine.beatMappings.find(
       mapping => mapping.beat === currentBeat
     );
 
@@ -32,7 +60,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
         wordSpan.style.color = '#FF0000';
       }
     }
-  }, [currentBeat, currentLine]);
+  }, [currentBeat, displayLine]);
 
   const createWordSpans = (text: string, beatMappings: any[]) => {
     const words = text.split(' ');
@@ -67,7 +95,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
     }, []);
   };
 
-  if (!currentLine) {
+  if (!displayLine) {
     return null;
   }
 
@@ -85,10 +113,12 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
         color: 'black',
         fontFamily: 'Arial, sans-serif',
         lineHeight: 1.5,
-        maxWidth: '90vw'
+        maxWidth: '90vw',
+        transition: 'opacity 0.2s ease-in-out',
+        opacity: 1
       }}
     >
-      {createWordSpans(currentLine.displayText, currentLine.beatMappings)}
+      {createWordSpans(displayLine.displayText, displayLine.beatMappings)}
     </div>
   );
 };
