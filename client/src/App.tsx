@@ -12,7 +12,6 @@ function App() {
   const [bpm] = useState(73)
   const [totalBeatCount, setTotalBeatCount] = useState(0)
   const [currentLineIndex, setCurrentLineIndex] = useState(0)
-  const [lyricsLoaded, setLyricsLoaded] = useState(false)
   const beatSchedulerRef = useRef<BeatScheduler | null>(null)
   const lyricsRef = useRef<ParsedLyrics | null>(null)
 
@@ -23,7 +22,6 @@ function App() {
         const response = await fetch('/lyrics/dandelion.md')
         const lyricsText = await response.text()
         lyricsRef.current = LyricsParser.parse(lyricsText)
-        setLyricsLoaded(true)
       } catch (error) {
         console.error('Failed to load lyrics:', error)
       }
