@@ -23,8 +23,6 @@ export class BeatScheduler {
     
     // Load background music using ArrayBuffer approach
     try {
-      console.log('Attempting to load background music...');
-      
       // Try .mp3 file for better mobile compatibility
       const response = await fetch("/music/dandelion.mp3");
       if (!response.ok) {
@@ -32,15 +30,9 @@ export class BeatScheduler {
       }
       
       const arrayBuffer = await response.arrayBuffer();
-      console.log('Audio file fetched, size:', arrayBuffer.byteLength, 'bytes');
       
       // Create audio buffer using Web Audio API directly
       const audioBuffer = await Tone.getContext().decodeAudioData(arrayBuffer);
-      console.log('Audio decoded successfully:', {
-        duration: audioBuffer.duration,
-        sampleRate: audioBuffer.sampleRate,
-        channels: audioBuffer.numberOfChannels
-      });
       
       // Create Tone.Player with the decoded buffer
       this.backgroundMusic = new Tone.Player(audioBuffer).toDestination();
@@ -50,10 +42,8 @@ export class BeatScheduler {
       
       // Set it to loop
       this.backgroundMusic.loop = true;
-      console.log('Background music loaded successfully');
     } catch (error) {
       console.error('Background music loading failed:', error);
-      console.log('Continuing without background music...');
       this.backgroundMusic = null;
     }
     
@@ -88,12 +78,8 @@ export class BeatScheduler {
     
     // Start background music if loaded and ready
     if (this.backgroundMusic) {
-      console.log('Starting background music...');
       // Sync with Transport for proper timing
       this.backgroundMusic.sync().start(0);
-      console.log('Background music synced and started');
-    } else {
-      console.log('No background music to start');
     }
     
     Tone.Transport.start();
@@ -111,12 +97,10 @@ export class BeatScheduler {
   }
 
   pause() {
-    console.log('Pausing... Transport state:', Tone.Transport.state);
     Tone.Transport.pause();
   }
 
   resume() {
-    console.log('Resuming... Transport state:', Tone.Transport.state);
     Tone.Transport.start();
   }
 

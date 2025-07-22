@@ -5,7 +5,6 @@ import { LyricsRenderer } from './LyricsRenderer'
 import { LyricsParser, type ParsedLyrics } from './LyricsParser'
 import Pulsehead from './Pulsehead'
 import './App.css'
-import './slider-styles.css'
 
 function App() {
   const [isPlaying, setIsPlaying] = useState(false)
@@ -103,7 +102,6 @@ function App() {
     } else {
       if (totalBeatCount === 0) {
         // Fresh start - reset everything
-        setTotalBeatCount(0)
         setCurrentLineIndex(0)
         await beatSchedulerRef.current.start()
       } else {
@@ -117,8 +115,6 @@ function App() {
 
   const currentLine = lyricsRef.current?.lines[currentLineIndex] || null
   const currentBeat = totalBeatCount > 0 ? (totalBeatCount - 1) % 4 : 0 // 0-3 for current beat within line/measure
-
-  // Remove loading flash - just render immediately
 
   return (
     <>
@@ -148,34 +144,6 @@ function App() {
         >
           {isPlaying ? '⏸️' : '▶️'}
         </button>
-        
-        {/* <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ 
-            fontSize: '18px', 
-            fontWeight: 'bold', 
-            color: '#333',
-            minWidth: '40px',
-            textAlign: 'center'
-          }}>
-            {bpm}
-          </span>
-          <input
-            type="range"
-            min="60"
-            max="200"
-            value={bpm}
-            onChange={handleBpmChange}
-            style={{
-              width: '120px',
-              height: '8px',
-              borderRadius: '4px',
-              background: `linear-gradient(to right, #44ff44 0%, #44ff44 ${(bpm-60)/(200-60)*100}%, #ddd ${(bpm-60)/(200-60)*100}%, #ddd 100%)`,
-              outline: 'none',
-              appearance: 'none',
-              cursor: 'pointer'
-            }}
-          />
-        </div> */}
       </div>
     </>
   )

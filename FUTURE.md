@@ -2,27 +2,6 @@
 
 *Prioritized list of features to pick from when creating new TODAY.md*
 
----
-
-## 🥇 Priority 1: True Pause/Resume Functionality
-*Estimated: 0.5 session - UX improvement*
-
-### Core Concept
-Implement proper pause/resume behavior where play/pause maintains position instead of stopping and restarting from beginning.
-
-### Key Features
-- Pause maintains current position in music, animation, and lyrics
-- Resume continues from exact pause point
-- Background music pauses instead of stopping
-- Pulsehead animation freezes in place during pause
-
-### Technical Scope
-- Add resume() method to BeatScheduler
-- Modify pause() to handle background music properly
-- Update App.tsx to use pause/resume instead of stop/start
-- Prevent animation resets in Pulsehead component
-
----
 
 
 ## 🥈 Priority 2: Design System Implementation
@@ -42,24 +21,6 @@ Implement the actual design from the design docs - grid lines, pink/salmon color
 - Add grid background component
 - Enhance tick visualization system
 
----
-
-## 🥉 Priority 3: Audio File Import & Sync
-*Estimated: 1 full session - Complex audio integration*
-
-### Core Concept
-Load actual audio files and sync Spatializer visuals to real music tracks instead of metronome.
-
-### Key Features
-- Audio file loading and playback
-- Beat detection from audio
-- Sync visuals to detected beats
-- Track scrubbing/timeline control
-
-### Technical Scope
-- Audio analysis libraries integration
-- Beat detection algorithms
-- Playback synchronization system
 
 ---
 
