@@ -6,66 +6,29 @@ import Pulsehead from './Pulsehead'
 import './App.css'
 import './slider-styles.css'
 
-// Dandelion lyrics embedded
-const DANDELION_LYRICS = `TITLE: DANDELION
-ARTIST: BROOKE LEE
-
-[I]'ve been [ripped] right [out] of the [ground] 
-so my [roots] don't [run] too [deep] [-]
-And [I've] been [wished] on a [thousand] [times] 
-with [promises] [I] don't [keep] [-]
-I [stood] up [on] a [sunny] [day], 
-laid [down] [in] the [night] [-]
-Woah-[woh],[oh] [oh], 
-[I]'m a dande[lion] [-] [-] [-]
-
-[I]'ve been [picked] and [held] real [tight] 
-in an [I] love [you] bou[quet] [-]
-[I]'ve been [simply] [cast] a[side] 
-like [I] was [in] the [way] [-]
-But [I] push [through] a [side]walk [crack] 
-and [come] back [every] [time] [-]
-Woah-[woh],[oh] [oh], 
-[I]'m a dande[lion] [-] [-] [-]
-
-[Dande] [lion] [-] [-] [-], 
-We're just [dancing] [in] the [breeze] [-]
-[Dande] [lion] [-] [-] [-], 
-Not a [flower] [not] a [weed] [-]
-[You] can [keep] your [roses] [-] 
-And [I]'ll keep [growing] [wild] [-]
-Woah-[woh],[oh] [oh], 
-[I]'m a dande[lion] [-] [-] [-]
-
-I've [never] [heard] a [bettеr] [song] 
-than [rain]drops [falling] [down] [-]
-I've [never] [fеlt] [more] at [home] 
-than [where] I [am] right [now] [-]
-So [I]'m just [gonna] [stay] right [here] 
-and [watch] the [world] go [by] [-]
-Woah-[woh],[oh] [oh], 
-[I]'m a dande[lion] [-] [-] [-]
-
-[Dande] [lion] [-] [-] [-], 
-We're just [dancing] [in] the [breeze] [-]
-[Dande] [lion] [-] [-] [-], 
-Not a [flower] [not] a [weed] [-]
-[You] can [keep] your [roses] [-] 
-And [I]'ll keep [growing] [wild] [-]
-Woah-[woh],[oh] [oh], 
-[I]'m a dande[lion] [-] [-] [-]`;
-
 function App() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [bpm, setBpm] = useState(73)
   const [totalBeatCount, setTotalBeatCount] = useState(0)
   const [currentLineIndex, setCurrentLineIndex] = useState(0)
+  const [lyricsLoaded, setLyricsLoaded] = useState(false)
   const beatSchedulerRef = useRef<BeatScheduler | null>(null)
   const lyricsRef = useRef<ParsedLyrics | null>(null)
 
   useEffect(() => {
-    // Parse lyrics
-    lyricsRef.current = LyricsParser.parse(DANDELION_LYRICS)
+    // Load lyrics from file
+    const loadLyrics = async () => {
+      try {
+        const response = await fetch('/lyrics/dandelion.md')
+        const lyricsText = await response.text()
+        lyricsRef.current = LyricsParser.parse(lyricsText)
+        setLyricsLoaded(true)
+      } catch (error) {
+        console.error('Failed to load lyrics:', error)
+      }
+    }
+    
+    loadLyrics()
     
     // Initialize BeatScheduler
     beatSchedulerRef.current = new BeatScheduler(bpm)
@@ -132,6 +95,10 @@ function App() {
 
   const currentLine = lyricsRef.current?.lines[currentLineIndex] || null
   const currentBeat = totalBeatCount > 0 ? (totalBeatCount - 1) % 4 : 0 // 0-3 for current beat within line/measure
+
+  if (!lyricsLoaded) {
+    return <div>Loading lyrics...</div>
+  }
 
   return (
     <>

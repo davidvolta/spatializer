@@ -76,7 +76,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
       ref={lineRef}
       style={{
         position: 'fixed',
-        bottom: '80px',
+        top: 'calc(50% - 200px)', // 100px above the upper reference line (which is at 50% - 100px)
         left: '50%',
         transform: 'translateX(-50%)',
         fontSize: '24px',
