@@ -8,7 +8,7 @@ import './slider-styles.css'
 
 function App() {
   const [isPlaying, setIsPlaying] = useState(false)
-  const [bpm, setBpm] = useState(73)
+  const [bpm] = useState(73)
   const [totalBeatCount, setTotalBeatCount] = useState(0)
   const [currentLineIndex, setCurrentLineIndex] = useState(0)
   const [lyricsLoaded, setLyricsLoaded] = useState(false)
@@ -78,23 +78,22 @@ function App() {
     if (!beatSchedulerRef.current) return
 
     if (isPlaying) {
-      beatSchedulerRef.current.stop()
+      beatSchedulerRef.current.pause()
       setIsPlaying(false)
     } else {
-      // Reset to beginning when starting
-      setTotalBeatCount(0)
-      setCurrentLineIndex(0)
-      await beatSchedulerRef.current.start()
+      if (totalBeatCount === 0) {
+        // Fresh start - reset everything
+        setTotalBeatCount(0)
+        setCurrentLineIndex(0)
+        await beatSchedulerRef.current.start()
+      } else {
+        // Resume from pause position
+        beatSchedulerRef.current.resume()
+      }
       setIsPlaying(true)
     }
   }
 
-  const handleBpmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newBpm = parseInt(e.target.value)
-    if (newBpm >= 60 && newBpm <= 200) {
-      setBpm(newBpm)
-    }
-  }
 
   const currentLine = lyricsRef.current?.lines[currentLineIndex] || null
   const currentBeat = totalBeatCount > 0 ? (totalBeatCount - 1) % 4 : 0 // 0-3 for current beat within line/measure

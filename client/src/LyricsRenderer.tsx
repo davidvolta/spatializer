@@ -48,7 +48,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
     const highlightedBeatWords = new Set(
       displayLine.beatMappings
         .filter(m => m.word && !m.skip && m.beat % 2 === 0) // Only even beats get highlighted
-        .map(m => m.word.toLowerCase())
+        .map(m => m.word!.toLowerCase())
     );
     
     wordRefs.current.forEach((span, word) => {
@@ -72,7 +72,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
 
     // Handle even beats (0, 2) - these get the glow
     if (currentMapping && currentMapping.word && !currentMapping.skip && currentBeat % 2 === 0) {
-      const wordSpan = wordRefs.current.get(currentMapping.word.toLowerCase());
+      const wordSpan = wordRefs.current.get(currentMapping.word!.toLowerCase());
       if (wordSpan) {
         wordSpan.style.color = '#0000FF'; // Full blue for active beat word
         wordSpan.style.fontWeight = 'normal'; // Normal weight for active beat word
@@ -94,7 +94,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
     const beatWords = new Set(
       beatMappings
         .filter(m => m.word && !m.skip)
-        .map(m => m.word.toLowerCase())
+        .map(m => m.word!.toLowerCase())
     );
 
     return words.map((word, index) => {

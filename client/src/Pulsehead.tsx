@@ -1,6 +1,5 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { BeatScheduler } from './BeatScheduler';
-import type { BeatEvent } from './BeatScheduler';
 import './Pulsehead.css';
 
 interface PulseheadProps {
@@ -9,10 +8,9 @@ interface PulseheadProps {
 
 export default function Pulsehead({ beatScheduler }: PulseheadProps) {
   const pulseheadRef = useRef<HTMLDivElement | null>(null);
-  const flashTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const flashTimeoutRef = useRef<number | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const trailHistory = useRef<{timestamp: number, y: number}[]>([]);
-  const [yPosition, setYPosition] = useState(0);
   const pausedTimeRef = useRef(0);
   const pauseStartTimeRef = useRef<number | null>(null);
   const currentYPositionRef = useRef(0);
@@ -54,11 +52,10 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
       const currentTime = performance.now();
       const elapsed = currentTime - startTime - pausedTimeRef.current;
       const beatDuration = (60 / 73) * 1000; // ms per beat at 73 BPM
-      const progress = (elapsed % beatDuration) / beatDuration;
       const totalBeats = elapsed / beatDuration;
       
       // Continuous sine wave animation  
-      const sineValue = Math.cos((totalBeats + 1) * Math.PI);
+      const sineValue = Math.cos(totalBeats * Math.PI);
       const yPosition = sineValue * 100; // Even beats at top (+100px), odd beats at bottom (-100px)
       
       // Always show pulsehead and update position
@@ -139,7 +136,7 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
       animationId = requestAnimationFrame(animate);
     };
 
-    const unsubscribe = beatScheduler.onBeat((event: BeatEvent) => {
+    const unsubscribe = beatScheduler.onBeat(() => {
       if (!pulseheadRef.current) return;
 
       // Reset startTime on first beat of new playback
