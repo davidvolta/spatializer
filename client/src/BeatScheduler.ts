@@ -18,6 +18,9 @@ export class BeatScheduler {
   private async initializeTransport() {
     await Tone.start();
     
+    // Set master volume to audible level
+    Tone.getDestination().volume.value = -6; // -6dB master volume
+    
     // Load background music using ArrayBuffer approach
     try {
       console.log('Attempting to load background music...');
@@ -41,6 +44,9 @@ export class BeatScheduler {
       
       // Create Tone.Player with the decoded buffer
       this.backgroundMusic = new Tone.Player(audioBuffer).toDestination();
+      
+      // Set audible volume level
+      this.backgroundMusic.volume.value = -12; // -12dB should be clearly audible
       
       // Set it to loop
       this.backgroundMusic.loop = true;
