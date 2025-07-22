@@ -65,27 +65,12 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
       }
     });
 
-    // Get the next beat's word and start pre-tick transition
-    const nextBeat = (currentBeat + 1) % 4;
-    const nextMapping = displayLine.beatMappings.find(
-      mapping => mapping.beat === nextBeat
-    );
-
-    // Start transition 200ms before next tick (if it's an even beat)
-    if (nextMapping && nextMapping.word && !nextMapping.skip && nextBeat % 2 === 0) {
-      const nextWordSpan = wordRefs.current.get(nextMapping.word.toLowerCase());
-      if (nextWordSpan) {
-        setTimeout(() => {
-          nextWordSpan.style.color = '#0000FF'; // Start transitioning to full blue
-        }, 400); // Start 200ms before the next beat (600ms beat duration - 200ms = 400ms)
-      }
-    }
-
-    // Highlight the current beat's word with full blue and glow (only on even beats)
+    // Two-beat anticipation cycle for even beats only
     const currentMapping = displayLine.beatMappings.find(
       mapping => mapping.beat === currentBeat
     );
 
+    // Handle even beats (0, 2) - these get the glow
     if (currentMapping && currentMapping.word && !currentMapping.skip && currentBeat % 2 === 0) {
       const wordSpan = wordRefs.current.get(currentMapping.word.toLowerCase());
       if (wordSpan) {
@@ -100,6 +85,28 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
           }
         }, 200);
       }
+    }
+
+    // Handle odd beats (1, 3) - light up the NEXT even beat's word (no glow)
+    if (currentBeat % 2 === 1) {
+      const nextEvenBeat = (currentBeat + 1) % 4; // Will be 2 or 0
+      
+      // If nextEvenBeat is 0, we're looking for beat 0 of the NEXT measure, not current
+      // For now, only handle beat 2 within the current measure (beat 1 -> beat 2)
+      if (nextEvenBeat === 2) {
+        const nextMapping = displayLine.beatMappings.find(
+          mapping => mapping.beat === nextEvenBeat
+        );
+        
+        if (nextMapping && nextMapping.word && !nextMapping.skip) {
+          const nextWordSpan = wordRefs.current.get(nextMapping.word.toLowerCase());
+          if (nextWordSpan) {
+            nextWordSpan.style.color = '#0000FF'; // Light up to full blue, no glow yet
+            nextWordSpan.style.textShadow = 'none'; // Ensure no glow
+          }
+        }
+      }
+      // TODO: Handle beat 3 -> next measure's beat 0 (would need access to next line)
     }
   }, [currentBeat, displayLine]);
 
