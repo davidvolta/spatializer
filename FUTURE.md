@@ -4,24 +4,6 @@
 
 ---
 
-## 🥇 Priority 1: Trails (Visual Rhythm Visualization)
-*Estimated: 1 full session - Complex visual system*
-
-### Core Concept
-Complete the core Spatializer vision: rhythm becomes a spatial trail across time. Pulsehead moves vertically with easing curves, leaving behind trails that visualize groove and anticipation.
-
-### Key Features
-- Y-axis pulsehead animation with musical easing
-- Continuous trail rendering (bspline curves)  
-- Time flow visualization (left-to-right movement)
-- Grid system integration from design docs
-
-### Technical Scope
-- Three.js integration for trail rendering
-- EaseLibrary for arrival curve patterns
-- Timeline/history system for trail data
-
----
 
 ## 🥈 Priority 2: Design System Implementation
 *Estimated: 0.5 session - Visual polish*
@@ -73,17 +55,4 @@ Optimize performance, add quality-of-life features, testing and polish.
 - Visual performance optimization
 - Mobile responsive design
 
----
-
-## 🚀 Priority 5: Advanced Features
-*Estimated: 1+ sessions - Extended functionality*
-
-### Core Concept
-Advanced features for power users and extended creative use.
-
-### Key Features
-- Multiple instrument layers
-- Export rhythm visualizations  
-- Real-time audio input analysis
-- Custom easing curve editor
-- Preset rhythm patterns
+--- 
