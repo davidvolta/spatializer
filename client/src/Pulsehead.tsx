@@ -139,9 +139,11 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
     const unsubscribe = beatScheduler.onBeat(() => {
       if (!pulseheadRef.current) return;
 
-      // Reset startTime on first beat of new playback
+      // Force reset timing on every start
       if (beatCount === 0) {
         startTime = performance.now();
+        pausedTimeRef.current = 0;
+        pauseStartTimeRef.current = null;
       }
 
       // Clear any existing flash timeout
