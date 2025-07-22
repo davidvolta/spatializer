@@ -53,7 +53,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
     
     wordRefs.current.forEach((span, word) => {
       if (highlightedBeatWords.has(word)) {
-        span.style.color = '#FF9999'; // Light red for words that get highlighted
+        span.style.color = '#9999FF'; // Light blue for words that get highlighted
         span.style.fontWeight = 'normal'; // Reset to normal weight
       } else {
         span.style.color = 'black'; // Black for all other words
@@ -69,7 +69,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
     if (currentMapping && currentMapping.word && !currentMapping.skip && currentBeat % 2 === 0) {
       const wordSpan = wordRefs.current.get(currentMapping.word.toLowerCase());
       if (wordSpan) {
-        wordSpan.style.color = '#FF0000'; // Full red for active beat word
+        wordSpan.style.color = '#0000FF'; // Full blue for active beat word
         wordSpan.style.fontWeight = 'bold'; // Bold for active beat word
       }
     }
