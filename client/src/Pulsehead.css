@@ -43,8 +43,8 @@
 }
 
 .pulsehead {
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background-color: #808080;
   /* Color transitions handled by JavaScript animation */
@@ -54,7 +54,7 @@
 
 .pulsehead.flashing {
   background-color: #0000FF;
-  animation: glow-explosion 0.3s ease-out;
+  animation: glow-explosion 0.2s ease-out;
 }
 
 .pulsehead::after {
@@ -62,13 +62,13 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 30px; /* 50% of the 60px pulsehead */
-  height: 30px;
+  width: 20px; /* Inner white circle */
+  height: 20px;
   border-radius: 50%;
   background-color: white;
   transform: translate(-50%, -50%);
   opacity: 0;
-  transition: opacity 0.1s ease-in-out;
+  transition: opacity 0.05s ease-in-out;
 }
 
 .pulsehead.flashing::after {
@@ -80,9 +80,10 @@
     box-shadow: 0 0 0 rgba(0, 0, 255, 0.7);
   }
   50% {
-    box-shadow: 0 0 50px 20px rgba(0, 0, 255, 0.5);
+    box-shadow: 0 0 40px 15px rgba(0, 0, 255, 0.5);
   }
   100% {
-    box-shadow: 0 0 80px 30px rgba(0, 0, 255, 0);
+    box-shadow: 0 0 60px 20px rgba(0, 0, 255, 0);
   }
 }
+

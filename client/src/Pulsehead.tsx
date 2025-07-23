@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import * as Tone from 'tone';
 import { BeatScheduler } from './BeatScheduler';
 import './Pulsehead.css';
 
@@ -54,7 +55,7 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
       const beatDuration = (60 / 73) * 1000; // ms per beat at 73 BPM
       const totalBeats = elapsed / beatDuration;
       
-      // Continuous sine wave animation  
+      // Continuous sine wave animation - full range
       const sineValue = Math.cos(totalBeats * Math.PI);
       const yPosition = -sineValue * 100; // Start at bottom (-100px), moves to top (+100px) on beat
       
@@ -131,12 +132,13 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
           
           ctx.stroke();
         }
+        
       }
       
       animationId = requestAnimationFrame(animate);
     };
 
-    const unsubscribe = beatScheduler.onBeat(() => {
+    const unsubscribe = beatScheduler.onBeat((beatEvent) => {
       if (!pulseheadRef.current) return;
 
       // Force reset timing on every start
@@ -151,10 +153,17 @@ export default function Pulsehead({ beatScheduler }: PulseheadProps) {
         clearTimeout(flashTimeoutRef.current);
       }
 
-      // Only flash on even beats (0, 2) - when at top of sine wave (+100px)
+      // Flash exactly on even beats (0, 2)
       if (beatCount % 2 === 0) {
-        pulseheadRef.current.classList.add('flashing');
+        const delay = (beatEvent.audioTime - Tone.now()) * 1000; // Convert to milliseconds
+        
+        setTimeout(() => {
+          if (pulseheadRef.current) {
+            pulseheadRef.current.classList.add('flashing');
+          }
+        }, Math.max(0, delay));
       }
+      
       
       beatCount++;
 
