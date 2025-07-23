@@ -144,7 +144,8 @@ function App() {
 
       {/* Lyrics Display - centered on screen */}
       <LyricsRenderer 
-        currentLine={currentLine}
+        allLines={lyricsRef.current?.lines || []}
+        currentLineIndex={currentLineIndex}
         currentBeat={currentBeat}
       />
 

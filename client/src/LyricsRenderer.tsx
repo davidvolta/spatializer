@@ -2,51 +2,39 @@ import React, { useRef, useEffect, useState } from 'react';
 import type { ParsedLine } from './LyricsParser';
 
 interface LyricsRendererProps {
-  currentLine: ParsedLine | null;
+  allLines: ParsedLine[];
+  currentLineIndex: number;
   currentBeat: number;
 }
 
 export const LyricsRenderer: React.FC<LyricsRendererProps> = ({ 
-  currentLine, 
+  allLines, 
+  currentLineIndex, 
   currentBeat 
 }) => {
-  const lineRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const wordRefs = useRef<Map<string, HTMLSpanElement>>(new Map());
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [displayLine, setDisplayLine] = useState<ParsedLine | null>(currentLine);
 
-  // Handle line changes with fade transition
+  // Handle scrolling based on current line
   useEffect(() => {
-    if (currentLine && currentLine !== displayLine && !isTransitioning) {
-      setIsTransitioning(true);
-      
-      // Fade out
-      if (lineRef.current) {
-        lineRef.current.style.opacity = '0';
-      }
-      
-      setTimeout(() => {
-        // Change content
-        setDisplayLine(currentLine);
-        
-        setTimeout(() => {
-          // Fade in
-          if (lineRef.current) {
-            lineRef.current.style.opacity = '1';
-          }
-          setIsTransitioning(false);
-        }, 100);
-      }, 100);
+    if (containerRef.current && allLines.length > 0) {
+      // Calculate responsive line height (matches CSS clamp)
+      const vw = window.innerWidth / 100;
+      const lineHeight = Math.max(25, Math.min(5 * vw, 36));
+      const scrollPosition = currentLineIndex * lineHeight;
+      containerRef.current.scrollTop = scrollPosition;
     }
-  }, [currentLine, displayLine, isTransitioning]);
+  }, [currentLineIndex, allLines.length]);
 
   // Handle beat highlighting
   useEffect(() => {
-    if (!displayLine || !lineRef.current) return;
+    if (!allLines.length || currentLineIndex >= allLines.length) return;
+    
+    const currentLine = allLines[currentLineIndex];
 
     // Reset all words: beat words that get highlighted to light red, others to black
     const highlightedBeatWords = new Set(
-      displayLine.beatMappings
+      currentLine.beatMappings
         .filter(m => m.word && !m.skip && m.beat % 2 === 0) // Only even beats get highlighted
         .map(m => m.word!.toLowerCase())
     );
@@ -66,7 +54,7 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
     });
 
     // Handle even beats (0, 2) - glow and full brightness when beat hits
-    const currentMapping = displayLine.beatMappings.find(
+    const currentMapping = currentLine.beatMappings.find(
       mapping => mapping.beat === currentBeat
     );
 
@@ -87,9 +75,9 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
       }
     }
 
-  }, [currentBeat, displayLine]);
+  }, [currentBeat, currentLineIndex, allLines]);
 
-  const createWordSpans = (text: string, beatMappings: any[]) => {
+  const createWordSpans = (text: string, beatMappings: any[], lineIndex: number) => {
     const words = text.split(' ');
     const beatWords = new Set(
       beatMappings
@@ -97,55 +85,75 @@ export const LyricsRenderer: React.FC<LyricsRendererProps> = ({
         .map(m => m.word!.toLowerCase())
     );
 
-    return words.map((word, index) => {
+    const elements: React.ReactNode[] = [];
+    
+    words.forEach((word, index) => {
       const cleanWord = word.toLowerCase().replace(/[.,!?]/g, '');
       const isBeatWord = beatWords.has(cleanWord);
       
+      if (index > 0) {
+        elements.push(<span key={`${lineIndex}-space-${index}`}>&nbsp;</span>); // Add space before each word except the first
+      }
+      
       if (isBeatWord) {
-        return (
+        elements.push(
           <span 
-            key={`${word}-${index}`}
+            key={`${lineIndex}-${word}-${index}`}
             ref={(el) => {
-              if (el) wordRefs.current.set(cleanWord, el);
+              if (el && lineIndex === currentLineIndex) {
+                wordRefs.current.set(cleanWord, el);
+              }
             }}
             style={{ color: 'black' }}
           >
             {word}
           </span>
         );
+      } else {
+        elements.push(
+          <span key={`${lineIndex}-${word}-${index}`}>{word}</span>
+        );
       }
-      
-      return <span key={`${word}-${index}`}>{word}</span>;
-    }).reduce((acc: React.ReactNode[], curr, index) => {
-      if (index === 0) return [curr];
-      return [...acc, ' ', curr];
-    }, []);
+    });
+    
+    return elements;
   };
 
-  if (!displayLine) {
+  if (!allLines.length) {
     return null;
   }
 
   return (
     <div 
-      ref={lineRef}
+      ref={containerRef}
       style={{
         position: 'fixed',
-        top: 'calc(50% + 148px)', // 48px below the sine wave (50% + 100px + 48px)
+        top: 'calc(50% + 198px)', // 98px below the sine wave (50% + 100px + 98px)
         left: '50%',
         transform: 'translateX(-50%)',
-        fontSize: '24px', // Reduced from 48px to 24px (half size)
+        fontSize: 'clamp(16px, 3vw, 24px)',
         textAlign: 'center',
-        padding: '20px',
         color: 'black',
         fontFamily: 'Inter, Arial, sans-serif',
         lineHeight: 1.5,
-        width: '100vw',
-        transition: 'opacity 0.1s ease-in-out',
-        opacity: 1
+        width: '800px', // Fixed width container
+        height: 'clamp(100px, 20vw, 144px)', // Responsive container height
+        overflow: 'hidden',
+        scrollBehavior: 'smooth'
       }}
     >
-      {createWordSpans(displayLine.displayText, displayLine.beatMappings)}
+      {allLines.map((line, index) => (
+        <div
+          key={index}
+          style={{
+            height: 'clamp(25px, 5vw, 36px)', // Responsive line height
+            lineHeight: 'clamp(25px, 5vw, 36px)',
+            padding: '0 10px'
+          }}
+        >
+          {createWordSpans(line.displayText, line.beatMappings, index)}
+        </div>
+      ))}
     </div>
   );
 };
