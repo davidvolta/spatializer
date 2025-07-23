@@ -124,7 +124,7 @@ function App() {
     setVocalsEnabled(event.target.checked)
   }
 
-  const currentLine = lyricsRef.current?.lines[currentLineIndex] || null
+  // const currentLine = lyricsRef.current?.lines[currentLineIndex] || null
   const currentBeat = totalBeatCount > 0 ? (totalBeatCount - 1) % 4 : 0 // 0-3 for current beat within line/measure
 
   return (
